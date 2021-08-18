@@ -1,37 +1,44 @@
 #include <stack>
 #include <iostream>
 
-bool is_valid_parentheses(const std::string& text)
+#include "../Helpers.hpp"
+
+class Solution
 {
-    std::stack<char> opened_parentheses;
-    for (const auto& symbol : text) {
-        if ((symbol == '(') || (symbol == '[') || (symbol == '{')) {
-            opened_parentheses.push(symbol);
-        } else {
-            const char last_symbol = opened_parentheses.top();
-            opened_parentheses.pop();
-            if ((symbol == ')') && (last_symbol == '(')) {
-                continue;
+public:
+    bool isValid(const std::string& s)
+    {
+        std::stack<char> parentheses;
+        for (const char sym : s) {
+            if ((sym == '(') || (sym == '[') || (sym == '{')) {
+                parentheses.push(sym);
+            } else if (!parentheses.empty()) {
+                const char last_sym = parentheses.top();
+                if (((last_sym == '(') && (sym == ')'))
+                    || ((last_sym == '[') && (sym == ']'))
+                    || ((last_sym == '{') && (sym == '}'))) {
+                    parentheses.pop();
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
-            if ((symbol == ']') && (last_symbol == '[')) {
-                continue;
-            }
-            if ((symbol == '}') && (last_symbol == '{')) {
-                continue;
-            }
-            return false;
         }
+
+        return parentheses.empty();
     }
-    return opened_parentheses.empty();
-}
+};
 
 int main(int argc, char** argv)
 {
-    std::cout << "Result: " << is_valid_parentheses("()") << std::endl;
-    std::cout << "Result: " << is_valid_parentheses("()[]{}") << std::endl;
-    std::cout << "Result: " << is_valid_parentheses("(]") << std::endl;
-    std::cout << "Result: " << is_valid_parentheses("([)]") << std::endl;
-    std::cout << "Result: " << is_valid_parentheses("{[]}") << std::endl;
-
+    Solution solution;
+    ASSERT_EQUALS(solution.isValid(""), true);
+    ASSERT_EQUALS(solution.isValid("()"), true);
+    ASSERT_EQUALS(solution.isValid("()[]{}"), true);
+    ASSERT_EQUALS(solution.isValid("(]"), false);
+    ASSERT_EQUALS(solution.isValid("([)]"), false);
+    ASSERT_EQUALS(solution.isValid("{[]}"), true);
+    ASSERT_EQUALS(solution.isValid("]{[]}"), false);
     return EXIT_SUCCESS;
 }
