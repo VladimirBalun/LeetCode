@@ -1,47 +1,55 @@
 #include <iostream>
 
+#include "../Helpers.hpp"
+
 struct ListNode
 {
-    int value;
+    int val;
     ListNode* next;
 };
 
-bool has_cycle(ListNode* head)
+class Solution
 {
-    if (!head || !head->next) {
-        return false;
-    }
-
-    const ListNode* first = head;
-    const ListNode* second = head->next;
-    while ((second) && (second->next)) {
-        if (first == second) {
-            return true;
+public:
+    bool hasCycle(const ListNode* head)
+    {
+        if (!head || !head->next) {
+            return false;
         }
 
-        first = first->next;
-        second = second->next->next;
-    }
+        const ListNode* first = head;
+        const ListNode* second = head->next;
+        while ((second) && (second->next)) {
+            if (first == second) {
+                return true;
+            }
 
-    return false;
-}
+            first = first->next;
+            second = second->next->next;
+        }
+
+        return false;
+    }
+};
+
 
 int main(int argc, char** argv)
 {
+    Solution solution;
     {
         ListNode* node_1 = nullptr;
-        std::cout << "Has cycle: " << has_cycle(node_1) << std::endl;
+        ASSERT_EQUALS(solution.hasCycle(node_1), false);
     }
     {
         ListNode node_1{1, nullptr};
-        std::cout << "Has cycle: " << has_cycle(&node_1) << std::endl;
+        ASSERT_EQUALS(solution.hasCycle(&node_1), false);
     }
     {
         ListNode node_1{1, nullptr};
         ListNode node_2{ 2, nullptr};
         node_1.next = &node_2;
         node_2.next = &node_1;
-        std::cout << "Has cycle: " << has_cycle(&node_1) << std::endl;
+        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
     }
     {
         ListNode node_1{3, nullptr};
@@ -50,7 +58,7 @@ int main(int argc, char** argv)
         node_1.next = &node_2;
         node_2.next = &node_3;
         node_3.next = &node_1;
-        std::cout << "Has cycle: " << has_cycle(&node_1) << std::endl;
+        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
     }
     {
         ListNode node_1{3, nullptr};
@@ -61,7 +69,7 @@ int main(int argc, char** argv)
         node_2.next = &node_3;
         node_3.next = &node_4;
         node_4.next = &node_2;
-        std::cout << "Has cycle: " << has_cycle(&node_1) << std::endl;
+        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
     }
     return EXIT_SUCCESS;
 }
