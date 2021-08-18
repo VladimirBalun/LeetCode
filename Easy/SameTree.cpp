@@ -1,65 +1,60 @@
 #include <iostream>
 
+#include "../Helpers.hpp"
+
 struct TreeNode
 {
-    int data = 0;
-    std::unique_ptr<TreeNode> left = nullptr;
-    std::unique_ptr<TreeNode> right = nullptr;
+    int val;
+    TreeNode* left;
+    TreeNode* right;
 };
 
-bool is_same_tree(const std::unique_ptr<TreeNode>& left, const std::unique_ptr<TreeNode>& right)
+class Solution
 {
-    std::function<bool(const std::unique_ptr<TreeNode>&, const std::unique_ptr<TreeNode>&)> is_same_impl;
-    is_same_impl = [&is_same_impl](const std::unique_ptr<TreeNode>& lhs, const std::unique_ptr<TreeNode>& rhs) {
-        if ((!lhs) && (!rhs)) {
+public:
+    bool isSameTree(const TreeNode* p, const TreeNode* q)
+    {
+        if ((!p) && (!q)) {
             return true;
-        } else if ((!lhs) || (!rhs)) {
+        } else if ((!p) || (!q)) {
             return false;
         } else {
-            return (lhs->data == rhs->data) &&
-                (is_same_impl(lhs->left, rhs->left)) &&
-                (is_same_impl(rhs->right, rhs->right));
+            return (p->val == q->val) &&
+                   (isSameTree(p->left, q->left)) &&
+                   (isSameTree(p->right, q->right));
         }
-    };
-
-    return is_same_impl(left, right);
-}
+    }
+};
 
 int main(int argc, char** argv)
 {
+    Solution solution;
     {
-        std::unique_ptr<TreeNode> left(new TreeNode{10, nullptr, nullptr});
-        std::unique_ptr<TreeNode> right(new TreeNode{10, nullptr, nullptr});
-        std::cout << "Is same: " << is_same_tree(left, right) << std::endl;
+        TreeNode left{10, nullptr, nullptr};
+        TreeNode right{10, nullptr, nullptr};
+        ASSERT_EQUALS(solution.isSameTree(&left, &right), true);
     }
     {
-        std::unique_ptr<TreeNode> left;
-        {
-            std::unique_ptr<TreeNode> left_child(new TreeNode{10, nullptr, nullptr});
-            std::unique_ptr<TreeNode> right_child(new TreeNode{10, nullptr, nullptr});
-            left = std::unique_ptr<TreeNode>{new TreeNode{20, std::move(left_child), std::move(right_child)}};
-        }
-        std::unique_ptr<TreeNode> right;
-        {
-            std::unique_ptr<TreeNode> left_child(new TreeNode{10, nullptr, nullptr});
-            std::unique_ptr<TreeNode> right_child(new TreeNode{10, nullptr, nullptr});
-            right = std::unique_ptr<TreeNode>{new TreeNode{20, std::move(left_child), std::move(right_child)}};
-        }
-        std::cout << "Is same: " << is_same_tree(left, right) << std::endl;
+        TreeNode left{20, nullptr, nullptr};
+        TreeNode left_left_child{10, nullptr, nullptr};
+        TreeNode left_right_child{10, nullptr, nullptr};
+        left.left = &left_left_child;
+        left.right = &left_right_child;
+        TreeNode right{20, nullptr, nullptr};
+        TreeNode right_left_child{10, nullptr, nullptr};
+        TreeNode right_right_child{10, nullptr, nullptr};
+        right.left = &right_left_child;
+        right.right = &right_right_child;
+        ASSERT_EQUALS(solution.isSameTree(&left, &right), true);
     }
     {
-        std::unique_ptr<TreeNode> left;
-        {
-            std::unique_ptr<TreeNode> left_child(new TreeNode{10, nullptr, nullptr});
-            left = std::unique_ptr<TreeNode>{new TreeNode{20, std::move(left_child), nullptr}};
-        }
-        std::unique_ptr<TreeNode> right;
-        {
-            std::unique_ptr<TreeNode> right_child(new TreeNode{10, nullptr, nullptr});
-            right = std::unique_ptr<TreeNode>{new TreeNode{20, nullptr, std::move(right_child)}};
-        }
-        std::cout << "Is same: " << is_same_tree(left, right) << std::endl;
+        TreeNode left{20, nullptr, nullptr};
+        TreeNode left_right_child{10, nullptr, nullptr};
+        left.right = &left_right_child;
+        TreeNode right{20, nullptr, nullptr};
+        TreeNode right_left_child{10, nullptr, nullptr};
+        right.left = &right_left_child;
+        ASSERT_EQUALS(solution.isSameTree(&left, &right), false);
     }
-
     return EXIT_SUCCESS;
 }
