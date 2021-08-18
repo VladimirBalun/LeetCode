@@ -1,28 +1,28 @@
 #include <iostream>
 #include <vector>
 
-int find_single_number(const std::vector<int>& data)
+#include "../Helpers.hpp"
+
+class Solution
 {
-    int single_number = 0;
-    for (const auto number : data) {
-        single_number ^= number;
+public:
+    int singleNumber(const std::vector<int>& nums)
+    {
+        int single_number = 0;
+        for (const auto number : nums) {
+            single_number ^= number;
+        }
+        return single_number;
     }
-    return single_number;
-}
+};
 
 int main(int argc, char** argv)
 {
-    {
-        const int single_number = find_single_number({ 2, 2, 1, 4, 4 });
-        std::cout << "Single number: " << single_number << std::endl;
-    }
-    {
-        const int single_number = find_single_number({ 4, 1, 2, 1, 2 });
-        std::cout << "Single number: " << single_number << std::endl;
-    }
-    {
-        const int single_number = find_single_number({ 1 });
-        std::cout << "Single number: " << single_number << std::endl;
-    }
+    Solution solution;
+    ASSERT_EQUALS(solution.singleNumber({ 2, 2, 1, 4, 4, 5, 5 }), 1);
+    ASSERT_EQUALS(solution.singleNumber({ 2, 2, 5, 4, 4, 5, 1 }), 1);
+    ASSERT_EQUALS(solution.singleNumber({ 2, 2, 5, 4, 1, 5, 4 }), 1);
+    ASSERT_EQUALS(solution.singleNumber({ 4, 1, 2, 1, 2 }), 4);
+    ASSERT_EQUALS(solution.singleNumber({ 1 }), 1);
     return EXIT_SUCCESS;
 }
