@@ -2,12 +2,6 @@
 
 #include "../Helpers.hpp"
 
-struct ListNode
-{
-    int val;
-    ListNode* next;
-};
-
 class Solution
 {
 public:
@@ -32,44 +26,31 @@ public:
     }
 };
 
-
 int main(int argc, char** argv)
 {
     Solution solution;
     {
-        ListNode* node_1 = nullptr;
-        ASSERT_EQUALS(solution.hasCycle(node_1), false);
+        ASSERT_EQUALS(solution.hasCycle(nullptr), false);
     }
     {
-        ListNode node_1{1, nullptr};
-        ASSERT_EQUALS(solution.hasCycle(&node_1), false);
+        ListNode* list = details::make_linked_list_with_cycle({ 1 }, 0);
+        ASSERT_EQUALS(solution.hasCycle(list), false);
+        details::delete_list_with_cycle(list);
     }
     {
-        ListNode node_1{1, nullptr};
-        ListNode node_2{ 2, nullptr};
-        node_1.next = &node_2;
-        node_2.next = &node_1;
-        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
+        ListNode* list = details::make_linked_list_with_cycle({ 1, 2 }, 1);
+        ASSERT_EQUALS(solution.hasCycle(list), true);
+        details::delete_list_with_cycle(list);
     }
     {
-        ListNode node_1{3, nullptr};
-        ListNode node_2{ 2, nullptr};
-        ListNode node_3{ 0, nullptr};
-        node_1.next = &node_2;
-        node_2.next = &node_3;
-        node_3.next = &node_1;
-        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
+        ListNode* list = details::make_linked_list_with_cycle({ 3, 2, 0 }, 3);
+        ASSERT_EQUALS(solution.hasCycle(list), true);
+        details::delete_list_with_cycle(list);
     }
     {
-        ListNode node_1{3, nullptr};
-        ListNode node_2{ 2, nullptr};
-        ListNode node_3{ 0, nullptr};
-        ListNode node_4{ -4, nullptr};
-        node_1.next = &node_2;
-        node_2.next = &node_3;
-        node_3.next = &node_4;
-        node_4.next = &node_2;
-        ASSERT_EQUALS(solution.hasCycle(&node_1), true);
+        ListNode* list = details::make_linked_list_with_cycle({ 3, 2, 0, -4 }, 2);
+        ASSERT_EQUALS(solution.hasCycle(list), true);
+        details::delete_list_with_cycle(list);
     }
     return EXIT_SUCCESS;
 }
