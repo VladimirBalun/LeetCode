@@ -4,6 +4,7 @@
 #include <cassert>
 #include <iostream>
 #include <type_traits>
+#include <unordered_set>
 
 struct ListNode
 {
@@ -60,8 +61,7 @@ namespace details {
         }
     }
 
-    template<typename T>
-    ListNode* make_list(std::initializer_list<T>&& values)
+    inline ListNode* make_list(std::initializer_list<int>&& values)
     {
         ListNode* root = nullptr;
         ListNode* node = nullptr;
@@ -76,10 +76,43 @@ namespace details {
         return root;
     }
 
+    inline ListNode* make_linked_list_with_cycle(std::initializer_list<int>&& values, int value_for_loop)
+    {
+        ListNode* root = nullptr;
+        ListNode* node = nullptr;
+        ListNode* node_for_loop = nullptr;
+        for (const auto& value : values) {
+            ListNode* temp = new ListNode{ value, nullptr };
+            if (value == value_for_loop) {
+                node_for_loop = temp;
+            }
+            if (!node) {
+                root = node = temp;
+            } else {
+                node->next = temp;
+                node = node->next;
+            }
+        }
+        if (root && node_for_loop) {
+            node->next = node_for_loop;
+        }
+        return root;
+    }
+
     inline void delete_list(ListNode* root)
     {
         while (root) {
             const ListNode* temp = root;
+            root = root->next;
+            delete temp;
+        }
+    }
+
+    inline void delete_list_with_cycle(ListNode* root) {
+        std::unordered_set<ListNode*> lookup;
+        while (root && !lookup.count(root)) {
+            const ListNode* temp = root;
+            lookup.insert(root);
             root = root->next;
             delete temp;
         }
@@ -92,7 +125,6 @@ namespace assert_details {
     template<typename T, typename U, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
     void assert_equals_impl(T result, U expected, const std::string& file_line)
     {
-        std::cout << "Arithmetic" << std::endl;
         if (expected != result) {
             std::cerr << "Assertion failed: " << file_line << " - Expected: "
                       << expected << " Result: " << result << std::endl;
