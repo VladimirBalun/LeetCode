@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <vector>
 #include <cassert>
 #include <iostream>
@@ -34,11 +35,22 @@ struct TreeNode
 template<typename T>
 std::ostream& operator << (std::ostream& os, const std::vector<T> vector)
 {
-    std::cerr << "[";
+    std::cerr << "[ ";
     for (const auto& element : vector) {
         std::cerr << element << ", ";
     }
     std::cerr << "]";
+    return os;
+}
+
+template<typename T>
+std::ostream& operator << (std::ostream& os, const std::list<T> list)
+{
+    std::cerr << "( ";
+    for (const auto& element : list) {
+        std::cerr << element << " -> ";
+    }
+    std::cerr << "null )";
     return os;
 }
 
@@ -122,7 +134,16 @@ namespace details {
 
 namespace assert_details {
 
-    template<typename T, typename U, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    template<typename Container>
+    struct is_supported_container
+    {
+        static inline constexpr bool value =
+            std::is_same_v<std::decay_t<Container>, std::vector<typename Container::value_type>> ||
+            std::is_same_v<std::decay_t<Container>, std::list<typename Container::value_type>>;
+    };
+
+    template<typename T, typename U, typename = std::enable_if_t<
+            std::is_arithmetic_v<T> || is_supported_container<T>::value>>
     void assert_equals_impl(T result, U expected, const std::string& file_line)
     {
         if (expected != result) {
@@ -134,18 +155,7 @@ namespace assert_details {
     template<typename T, typename = std::enable_if_t<std::is_same_v<std::decay_t<T>, ListNode*>>>
     void assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
     {
-        static_assert(std::is_pointer_v<T>, "Type must be a pointer to ListNode");
         if (!details::lists_are_equal(expected, result)) {
-            std::cerr << "Assertion failed: " << file_line << " - Expected: "
-                      << expected << " Result: " << result << std::endl;
-        }
-    }
-
-    template<template<typename> typename Vector, typename T,
-             typename = std::enable_if_t<std::is_same_v<std::decay_t<Vector<T>>, std::vector<T>>>>
-    void assert_equals_impl(Vector<T>&& result, Vector<T>&& expected, const std::string& file_line)
-    {
-        if (expected != result) {
             std::cerr << "Assertion failed: " << file_line << " - Expected: "
                       << expected << " Result: " << result << std::endl;
         }
