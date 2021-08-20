@@ -134,7 +134,7 @@ namespace details {
 
 namespace assert_details {
 
-    template<typename Container>
+    template<typename Container, typename = std::enable_if_t<!std::is_arithmetic_v<Container>>>
     struct is_supported_container
     {
         static inline constexpr bool value =
@@ -142,9 +142,9 @@ namespace assert_details {
             std::is_same_v<std::decay_t<Container>, std::list<typename Container::value_type>>;
     };
 
-    template<typename T, typename U, typename = std::enable_if_t<
-            std::is_arithmetic_v<T> || is_supported_container<T>::value>>
-    void assert_equals_impl(T result, U expected, const std::string& file_line)
+    template<typename T>
+    std::enable_if_t<is_supported_container<T>::value>
+    assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
     {
         if (expected != result) {
             std::cerr << "Assertion failed: " << file_line << " - Expected: "
@@ -152,8 +152,19 @@ namespace assert_details {
         }
     }
 
-    template<typename T, typename = std::enable_if_t<std::is_same_v<std::decay_t<T>, ListNode*>>>
-    void assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
+    template<typename T, typename U>
+    std::enable_if_t<std::is_arithmetic_v<T>>
+    assert_equals_impl(T result, U expected, const std::string& file_line)
+    {
+        if (expected != result) {
+            std::cerr << "Assertion failed: " << file_line << " - Expected: "
+                      << expected << " Result: " << result << std::endl;
+        }
+    }
+
+    template<typename T>
+    std::enable_if_t<std::is_same_v<std::decay_t<T>, ListNode*>>
+    assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
     {
         if (!details::lists_are_equal(expected, result)) {
             std::cerr << "Assertion failed: " << file_line << " - Expected: "
