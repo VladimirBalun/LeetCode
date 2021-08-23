@@ -137,9 +137,11 @@ namespace assert_details {
     template<typename Container, typename = std::enable_if_t<!std::is_arithmetic_v<Container>>>
     struct is_supported_container
     {
+        using value_type = typename Container::value_type;
         static inline constexpr bool value =
-            std::is_same_v<std::decay_t<Container>, std::vector<typename Container::value_type>> ||
-            std::is_same_v<std::decay_t<Container>, std::list<typename Container::value_type>>;
+            (std::is_arithmetic_v<value_type> || std::is_same_v<value_type, std::string>) &&
+            (std::is_same_v<std::decay_t<Container>, std::vector<value_type>> ||
+                std::is_same_v<std::decay_t<Container>, std::list<value_type>>);
     };
 
     template<typename T>
@@ -147,6 +149,25 @@ namespace assert_details {
     assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
     {
         if (expected != result) {
+            std::cerr << "Assertion failed: " << file_line << " - Expected: "
+                      << expected << " Result: " << result << std::endl;
+        }
+    }
+
+    template<typename T>
+    std::enable_if_t<is_supported_container<typename T::value_type>::value>
+    assert_equals_impl(T&& result, T&& expected, const std::string& file_line)
+    {
+        bool are_equal = true;
+        if (result.size() == expected.size()) {
+            for (size_t i = 0u; i < expected.size(); ++i) {
+                are_equal &= (result.at(i) == expected.at(i));
+            }
+        } else {
+            are_equal = false;
+        }
+
+        if (!are_equal) {
             std::cerr << "Assertion failed: " << file_line << " - Expected: "
                       << expected << " Result: " << result << std::endl;
         }
