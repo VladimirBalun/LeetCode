@@ -134,7 +134,8 @@ namespace details {
 
 namespace assert_details {
 
-    template<typename Container, typename = std::enable_if_t<!std::is_arithmetic_v<Container>>>
+    template<typename Container, typename = std::enable_if_t<(!std::is_arithmetic_v<Container>)
+            && (!std::is_same_v<std::remove_reference_t<std::decay_t<Container>>, ListNode*>)>>
     struct is_supported_container
     {
         using value_type = typename Container::value_type;
