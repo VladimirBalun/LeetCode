@@ -1,6 +1,14 @@
-#include <array>
-
 #include "../Helpers.hpp"
+
+// Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+// Example 1:
+// Input: s = "anagram", t = "nagaram"
+// Output: true
+
+// Example 2:
+// Input: s = "rat", t = "car"
+// Output: false
 
 class Solution
 {
@@ -19,12 +27,6 @@ public:
 
         for (const char symbol : t) {
             --symbols[symbol - 'a'];
-        }
-
-        for (const int count : symbols) {
-            if (count != 0) {
-                return false;
-            }
         }
 
         return std::all_of(symbols.cbegin(), symbols.cend(), [](int count){ return count == 0; });

@@ -1,31 +1,53 @@
-#include <queue>
-#include <list>
-#include <vector>
-#include <utility>
-#include <iostream>
+#include "../Helpers.hpp"
 
-std::list<int> merge_lists(const std::vector<std::list<int>>& lists)
+// You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+// Merge all the linked-lists into one sorted linked-list and return it.
+
+// Example 1:
+// Input: lists = [[1,4,5],[1,3,4],[2,6]]
+// Output: [1,1,2,3,4,4,5,6]
+// Explanation: The linked-lists are:
+// [
+//    1->4->5,
+//    1->3->4,
+//    2->6
+// ]
+// merging them into one sorted list:
+// 1->1->2->3->4->4->5->6
+
+// Example 2:
+// Input: lists = []
+// Output: []
+
+// Example 3:
+// Input: lists = [[]]
+// Output: []
+
+ListNode* merge_lists(const std::vector<ListNode*>& lists)
 {
-    using iterator_t = std::list<int>::const_iterator;
-    using iterator_with_index_t = std::pair<iterator_t, size_t>;
-    static const auto comparator = [](const iterator_with_index_t& lhs, const iterator_with_index_t& rhs) {
-        return *lhs.first > *rhs.first;
+    static const auto comparator = [](const ListNode* lhs, const ListNode* rhs) {
+        return lhs->val > rhs->val;
     };
 
-    std::priority_queue<iterator_with_index_t, std::vector<iterator_with_index_t>, decltype(comparator)> iterators(comparator);
-    for (size_t list_index = 0u; list_index < lists.size(); ++list_index) {
-        if (!lists.at(list_index).empty()) {
-            iterators.emplace(lists.at(list_index).cbegin(), list_index);
+    std::priority_queue<ListNode*, std::vector<ListNode*>, decltype(comparator)> iterators(comparator);
+    for (ListNode* iterator : lists) {
+        if (iterator) {
+            iterators.push(iterator);
         }
     }
 
-    std::list<int> sorted_list;
+    ListNode* sorted_list = nullptr;
+    ListNode* sorted_list_iterator = nullptr;
     while (!iterators.empty()) {
         auto current_iterator = iterators.top();
-        sorted_list.push_back(*current_iterator.first);
-
+        if (!sorted_list) {
+            sorted_list_iterator = sorted_list = new ListNode{ current_iterator->val };
+        } else {
+            sorted_list_iterator->next = new ListNode{ current_iterator->val };
+            sorted_list_iterator = sorted_list_iterator->next;
+        }
         iterators.pop();
-        if (++current_iterator.first != lists.at(current_iterator.second).cend()) {
+        if (current_iterator = current_iterator->next) {
             iterators.push(current_iterator);
         }
     }
@@ -35,29 +57,5 @@ std::list<int> merge_lists(const std::vector<std::list<int>>& lists)
 
 int main(int argc, char** argv)
 {
-    {
-        std::vector<std::list<int>> lists{ { 1, 4, 5 }, { 1, 3, 4 }, { 2, 6 } };
-        std::list<int> sorted_list = merge_lists(lists);
-        for (const auto item : sorted_list) {
-            std::cout << item << " ";
-        }
-        std::cout << std::endl;
-    }
-    {
-        std::vector<std::list<int>> lists{};
-        std::list<int> sorted_list = merge_lists(lists);
-        for (const auto item : sorted_list) {
-            std::cout << item << " ";
-        }
-        std::cout << std::endl;
-    }
-    {
-        std::vector<std::list<int>> lists{ {} };
-        std::list<int> sorted_list = merge_lists(lists);
-        for (const auto item : sorted_list) {
-            std::cout << item << " ";
-        }
-        std::cout << std::endl;
-    }
     return EXIT_SUCCESS;
 }

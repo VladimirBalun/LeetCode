@@ -1,6 +1,19 @@
-#include <unordered_map>
-
 #include "../Helpers.hpp"
+
+// Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+// An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+// Example 1:
+// Input: strs = ["eat","tea","tan","ate","nat","bat"]
+// Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+// Example 2:
+// Input: strs = [""]
+// Output: [[""]]
+
+// Example 3:
+// Input: strs = ["a"]
+// Output: [["a"]]
 
 class Solution
 {
@@ -17,7 +30,6 @@ public:
 
         result.reserve(lookup_table.size());
         for (auto&& anagrams : lookup_table) {
-            std::sort(anagrams.second.begin(), anagrams.second.end());
             result.push_back(std::move(anagrams.second));
         }
 
@@ -27,20 +39,5 @@ public:
 
 int main(int argc, char** argv)
 {
-    Solution solution;
-    {
-        const std::vector<std::string> strings{ "eat", "tea", "tan", "ate", "nat", "bat" };
-        ASSERT_EQUALS(solution.groupAnagrams(strings), (std::vector<std::vector<std::string>>{
-            { "bat" }, { "nat", "tan" }, { "ate", "eat", "tea" }
-        }));
-    }
-    {
-        const std::vector<std::string> strings{ "" };
-        ASSERT_EQUALS(solution.groupAnagrams(strings), (std::vector<std::vector<std::string>>{{ "" }}));
-    }
-    {
-        const std::vector<std::string> strings{ "a" };
-        ASSERT_EQUALS(solution.groupAnagrams(strings), (std::vector<std::vector<std::string>>{{ "a" }}));
-    }
     return EXIT_SUCCESS;
 }
