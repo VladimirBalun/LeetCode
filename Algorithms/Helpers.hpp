@@ -3,6 +3,7 @@
 #include <list>
 #include <vector>
 #include <cassert>
+#include <sstream>
 #include <iostream>
 #include <type_traits>
 #include <unordered_set>
