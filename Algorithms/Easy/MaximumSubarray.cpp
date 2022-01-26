@@ -21,17 +21,13 @@ class Solution
 public:
     int maxSubArray(std::vector<int>& nums)
     {
-        if (nums.empty()) {
-            return 0;
-        }
-
-        int max_sum = nums[0];
-        int current_sum = nums[0];
+        int max_sum = nums[0u];
+        int current_sum = max_sum;
         for (size_t i = 1u; i < nums.size(); ++i) {
-            current_sum = std::max(current_sum + num, num);
-            max_sum = std::max(current_sum, max_sum);
+            current_sum = std::max(nums[i], current_sum + nums[i]);
+            max_sum = std::max(max_sum, current_sum);
         }
-
+ 
         return max_sum;
     }
 };

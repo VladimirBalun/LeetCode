@@ -20,16 +20,15 @@ class Solution
 public:
     int maxProfit(const std::vector<int>& prices)
     {
-        int max_profit = 0;
+        int max = 0;
         int min = std::numeric_limits<int>::max();
-        for (const int price : prices) {
-            if (price < min) {
-                min = price;
-            } else if (price - min > max_profit) {
-                max_profit = price - min;
+        for (size_t i = 0u; i < prices.size(); ++i) {
+            if (min > prices[i]) {
+                min = prices[i];
+            } else {
+                max = std::max(max, prices[i] - min);
             }
         }
-
         return max_profit;
     }
 };
