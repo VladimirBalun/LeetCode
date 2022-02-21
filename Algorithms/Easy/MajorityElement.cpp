@@ -16,14 +16,16 @@ class Solution
 public:
     int majorityElement(const std::vector<int>& nums) 
     {
-        const size_t half = nums.size() / 2u;
-        std::unordered_map<size_t, size_t> lookup;
-        for (const int num : nums) {
-            if (++lookup[num] > half) {
-                return num;
+        int count = 0;
+        int candidate = std::numeric_limits<int>::min();
+        for (auto num : nums) {
+            if (count == 0) {
+                candidate = num;
             }
+            count += (num == candidate) ? 1 : -1;
         }
-        return -1;
+
+        return candidate;
     }
 };
 
