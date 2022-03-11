@@ -20,21 +20,18 @@ class Solution
 public:
     int searchInsert(const std::vector<int>& nums, int target)
     {
-        int left = 0;
-        int right = nums.size() - 1;
-
-        while (left <= right) {
-            const int middle = (left + right) / 2;
-            if (target < nums[middle]) {
-                right = middle - 1;
-            } else if (target > nums[middle]) {
-                left = middle + 1;
+        int left = -1;
+        int right = nums.size();
+        while (right - left > 1) {
+            const int middle = left + (right - left) / 2;
+            if (nums[middle] >= target) {
+                right = middle;
             } else {
-                return middle;
+                left = middle;
             }
         }
 
-        return left;
+        return right;
     }
 };
 
