@@ -20,24 +20,18 @@
 class Solution 
 {
 public:
-    void rotate(std::vector<int>& nums, size_t k)
+    void rotate(vector<int>& nums, int k)
     {
-        if ((k == 0u) || (nums.empty())) {
-            return;
-        }
-
-        const auto reverse = [&nums](size_t left, size_t right)
-        {
-            while (left < right) {
-                std::swap(nums[left++], nums[right--]);
-            }
-        };
-
-        const size_t offset = k % nums.size();
-        if (offset != 0u) {
-            reverse(0u, nums.size() - 1u);
-            reverse(0u, offset - 1u);
-            reverse(offset, nums.size() - 1u);
+        k = k % nums.size();
+        reverse(nums, 0, nums.size() - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.size() - 1);
+    }
+    
+    void reverse(vector<int>& nums, int begin, int end)
+    {
+        while (begin < end) {
+            std::swap(nums[begin++], nums[end--]);   
         }
     }
 };
