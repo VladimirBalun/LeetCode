@@ -24,27 +24,20 @@ class Solution
 public:
     std::vector<int> twoSum(const std::vector<int>& numbers, int target)
     {
-        std::vector<int> result{};
-        if (numbers.size() < 2u) {
-            return result;
-        }
-
         int left = 0;
-        int right = static_cast<int>(numbers.size() - 1u);
-        while (left <= right) {
+        int right = numbers.size() - 1;
+        while (left < right) {
             const int sum = numbers[left] + numbers[right];
-            if (sum > target) {
-                --right;
-            } else if (sum < target) {
+            if (sum < target) {
                 ++left;
+            } else if (sum > target) {
+                --right;
             } else {
-                result.push_back(left + 1);
-                result.push_back(right + 1);
-                return result;
+                return { left + 1, right + 1 };
             }
         }
-
-        return result;
+        
+        return { -1, -1 };
     }
 };
 
