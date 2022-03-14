@@ -16,9 +16,10 @@ class Solution
 public:
     void reverseString(vector<char>& s) 
 	{
-    	for (size_t i = 0u; i < s.size() / 2u; ++i) {
-			std::swap(s[i], s[s.size() - i - 1u]);
-		}    
+        const size_t middle = s.size() / 2u;
+        for (size_t i = 0u; i < middle; ++i) {
+            std::swap(s[i], s[s.size() - 1 - i]);
+        }  
     }
 };
 
