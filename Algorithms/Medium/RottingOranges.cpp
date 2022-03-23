@@ -56,15 +56,13 @@ public:
                 rotten_oranges.pop();
 
                 for (const auto& dir: directions) {
-                    std::pair<int, int> next_dir{ 
-                        orange.first + dir.first, orange.second + dir.second
-                    };
-
-                    if (next_dir.first >= 0 && next_dir.first < row_size &&
-                        next_dir.second >= 0 && next_dir.second < col_size &&
-                        grid[next_dir.first][next_dir.second] == 1) {
-                        rotten_oranges.emplace(next_dir.first, next_dir.second);
-                        grid[next_dir.first][next_dir.second] = 2;
+                    const int row = orange.first + dir.first;
+                    const int col = orange.second + dir.second;
+                    if (row >= 0 && row < row_size &&
+                        col >= 0 && col < col_size &&
+                        grid[row][col] == 1) {
+                        rotten_oranges.emplace(row, col);
+                        grid[row][col] = 2;
                         was_rotten = true;
                         --fresh_oranges;
                     }
