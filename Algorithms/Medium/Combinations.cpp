@@ -24,9 +24,24 @@ class Solution
 public:
     std::vector<std::vector<int>> combine(int n, int k)
     {
-        for (int i = 1; i <= n; ++i) {
+        std::vector<int> combination;
+        std::vector<std::vector<int>> result;
 
-        }
+        std::function<void(int)> backtracking;
+        backtracking = [&combination, k, n] (int number)
+        {
+            if (combination.size() == k)
+                return result.push_back(combination);
+
+            for (int i = number; i <= n; ++i) {
+                combination.push_back(i);
+                backtracking(i + 1);
+                combination.pop_back();
+            }
+        };
+
+        backtracking(1);
+        return result;
     }
 };
 
