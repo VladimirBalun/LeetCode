@@ -42,34 +42,29 @@ class Solution
 public:
     bool isValidSudoku(std::vector<std::vector<char>>& board)
     {
-        constexpr size_t BOX_SIZE = 9u;
-        constexpr size_t PART_SIZE = BOX_SIZE / 3u;
+        std::array<std::array<size_t, 9u>, 9u> cols{ { 0u } };
+        std::array<std::array<size_t, 9u>, 9u> rows{ { 0u } };
+        std::array<std::array<size_t, 9u>, 9u> boxes{ { 0u } };
+        
+        for (uint8_t i = 0u; i < 9u; ++i) {
+            for (uint8_t j = 0u; j < 9u; ++j) {
+                if (std::isdigit(board[i][j])) {
+                    const int8_t value = board[i][j] - '0' - 1;
 
-        std::array<std::array<size_t, BOX_SIZE>, BOX_SIZE> cols{ 0u };
-        std::array<std::array<size_t, BOX_SIZE>, BOX_SIZE> rows{ 0u };
-        std::array<std::array<size_t, BOX_SIZE>, BOX_SIZE> boxes{ { 0u } };
-
-        for (size_t i = 0u; i < board.size(); ++i) {
-            for (size_t j = 0u; j < board[i].size(); ++j) {
-                const char value = board[i][j];
-                if (std::isdigit(value)) {
-                    const size_t row = i / PART_SIZE;
-                    const size_t col = j / PART_SIZE;
-                    const size_t box = row * PART_SIZE + col;
-
-                    ++cols[i][value - '0' - 1u];
-                    ++rows[j][value - '0' - 1u];
-                    ++boxes[box][value - '0' - 1u];
-
-                    if ((cols[i][value - '0' - 1u] > 1u) || 
-                        (rows[j][value - '0' - 1u] > 1u) ||
-                        (boxes[box][value - '0' - 1u] > 1u)) {
+                    if (++rows[i][value] > 1)
                         return false;
-                    }
+                    if (++cols[j][value] > 1)
+                        return false;
+                    
+                    const uint8_t row = i / 3;
+                    const uint8_t col = j / 3;
+                    const uint8_t box = row * 3 + col;
+                    if (++boxes[box][value] > 1)
+                        return false;
                 }
             }
         }
-
+        
         return true;
     }
 };
