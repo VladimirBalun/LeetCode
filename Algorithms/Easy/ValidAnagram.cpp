@@ -15,21 +15,23 @@ class Solution
 public:
     bool isAnagram(const std::string& s, const std::string& t)
     {
-        if (s.length() != t.length()) {
-            return false;
+        if (s.size() != t.size()) {
+            return false;          
+        }
+        
+        std::array<int, 26u> lookup{ 0 };
+        for (size_t i = 0u; i < s.size(); ++i) {
+            ++lookup[s[i] - 'a'];
+            --lookup[t[i] - 'a'];
         }
 
-        constexpr size_t ALPHABET_COUNT = 26u;
-        std::array<int, ALPHABET_COUNT> symbols{};
-        for (const char symbol : s) {
-            ++symbols[symbol - 'a'];
+        for (size_t i = 0u; i < 26u; ++i) {
+            if (lookup[i] != 0u) {
+                return false;
+            }
         }
 
-        for (const char symbol : t) {
-            --symbols[symbol - 'a'];
-        }
-
-        return std::all_of(symbols.cbegin(), symbols.cend(), [](int count){ return count == 0; });
+        return true;
     }
 };
 
