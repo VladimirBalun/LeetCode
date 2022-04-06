@@ -35,40 +35,44 @@ public:
     
     void push(int x)
     {
-        if (m_stack.empty()) {
-            m_stack.push(x);
-        } else {
-             std::stack<int> temp;
-             while (!m_stack.empty()) {
-                temp.push(m_stack.top());
-                m_stack.pop();
-             }
-             m_stack.push(x);
-             while (!temp.empty()) {
-                m_stack.push(temp.top());
-                temp.pop();
-             }
-        }
+        m_input.push(x);
     }
     
     int pop()
     {
-        const int x = m_stack.top();;
-        m_stack.pop();
-        return x;
+        if (m_output.empty()) {
+            shift_stacks();
+        }
+        
+        const int value = m_output.top();
+        m_output.pop();
+        return value;
     }
     
     int peek()
     {
-        return m_stack.top(); 
+        if (m_output.empty()) {
+            shift_stacks();
+        }
+        
+        return m_output.top();
     }
     
     bool empty()
     {
-        return m_stack.empty(); 
+        return m_input.empty() && m_output.empty();
     }
 private:
-    std::stack<int> m_stack;
+    void shift_stacks()
+    {
+        while (!m_input.empty()) {
+            m_output.push(m_input.top());
+            m_input.pop();
+        }
+    }
+private:
+    std::stack<int> m_input;
+    std::stack<int> m_output;
 };
 
 int main(int argc, char** argv)
