@@ -30,8 +30,6 @@ public:
                     impl(child);
                 }
             }
-
-            result.pop_back();
         };
 
         impl(root);
