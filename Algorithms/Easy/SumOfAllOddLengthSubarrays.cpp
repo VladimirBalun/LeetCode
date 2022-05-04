@@ -34,21 +34,14 @@ class Solution
 public:
     int sumOddLengthSubarrays(const std::vector<int>& arr)
     {
-        if (arr.size() < 4u) {
-            int result = 0;
-            for (size_t i = 0u; i < arr.size(); ++i) {
-                result += arr[i];
-            }
-
-            return result;
+        int sum = 0;
+        const size_t size = arr.size();
+        for (size_t i = 0; i < size; i++) {
+            const int contribution = ((i + 1) * (size - i) + 1) / 2;
+            sum += contribution * arr[i];
         }
-
-        std::vector<int> preffix_sum(arr.size() + 1u, 0);
-        for (size_t i = 0u; i < arr.size(); ++i) {
-            preffix_sum[i + 1] = preffix_sum[i] + 
-        }
-
-        return preffix_sum.last();
+ 
+        return sum;
     }
 };
 
