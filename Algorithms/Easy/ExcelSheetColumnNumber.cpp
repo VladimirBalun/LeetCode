@@ -1,6 +1,6 @@
 #include "../Helpers.hpp"
 
-// Given a string columnTitle that represents the column title as appear in an Excel sheet, return its corresponding column number.
+// Given an integer columnNumber, return its corresponding column title as it appears in an Excel sheet.
 
 // For example:
 // A -> 1
@@ -13,40 +13,33 @@
 // ...
 
 // Example 1:
-// Input: columnTitle = "A"
-// Output: 1
+// Input: columnNumber = 1
+// Output: "A"
+
 // Example 2:
+// Input: columnNumber = 28
+// Output: "AB"
 
-// Input: columnTitle = "AB"
-// Output: 28
 // Example 3:
+// Input: columnNumber = 701
+// Output: "ZY"
 
-// Input: columnTitle = "ZY"
-// Output: 701
-
-class Solution
-{
+class Solution {
 public:
-    int titleToNumber(const std::string& column_title)
+    std::string convertToTitle(int column_number)
     {
-        int result = 0;
-        for (const char symbol : column_title) {
-            if (result > std::numeric_limits<int>::max() / 26) {
-                return -1;
-            }
-            result *= 26;
-            const char symbol_num = symbol - 'A' + 1
-            if (result > std::numeric_limits<int>::max() - symbol_num) {
-                return -1;
-            }
-            result += symbol_num;
+    	std::string result;
+        while (column_number > 0) {
+        	result.push_back((column_number - 1) % 26 + 'A');
+        	column_number = (column_number - 1) / 26;
         }
 
+        std::reverse(begin(result), end(result));
         return result;
     }
 };
 
 int main(int argc, char** argv)
 {
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
