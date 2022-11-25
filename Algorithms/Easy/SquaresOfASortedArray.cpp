@@ -17,38 +17,25 @@ class Solution
 public:
     std::vector<int> sortedSquares(const std::vector<int>& nums)
     {
-         std::vector<int> result;
-        result.reserve(nums.size());
+        int left = 0;
+        int right = nums.size() - 1;
+        int insert_index = right;
+        std::vector<int> result(nums.size());
+        
+        while (left <= right) {
+            const auto left_value = nums[left];
+            const auto right_value = nums[right];
+            if (abs(left_value) <= abs(right_value)) {
+                result[insert_index] = right_value * right_value;
+                --right;
+            } else {
+                result[insert_index] = left_value * left_value;
+                ++left;
+            } 
 
-        ssize_t index = 1;
-        ssize_t middle = 0;
-        while (index < nums.size() && std::abs(nums[middle]) >= std::abs(nums[index])) {
-        	middle = index++;
+            --insert_index;
         }
-
-        ssize_t left = middle - 1;
-        ssize_t right = middle + 1;
-        result.push_back(nums[middle] * nums[middle]);
-        while (result.size() != nums.size()) {
-        	if (left < 0) {
-        		result.push_back(nums[right] * nums[right]);
-        		++right;
-        	} else if (right >= nums.size()) {
-        		result.push_back(nums[left] * nums[left]);
-        		--left;
-        	} else {
-        		const int left_result = nums[left] * nums[left];
-        		const int right_result = nums[right] * nums[right];
-        		if (left_result <= right_result) {
-       				result.push_back(left_result);
-        			--left;
-        		} else {
-      				result.push_back(right_result);
-        			++right;
-        		}
-        	}
-        }
-
+        
         return result;
     }
 };
